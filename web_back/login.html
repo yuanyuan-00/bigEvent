@@ -2,34 +2,121 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>大事件-后台登录页</title>
-    <link rel="stylesheet" type="text/css" href="css/reset.css">
-    <link rel="stylesheet" type="text/css" href="css/iconfont.css">
-    <link rel="stylesheet" type="text/css" href="css/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>大事件-后台登录页</title>
+  <link rel="stylesheet" type="text/css" href="css/reset.css">
+  <link rel="stylesheet" type="text/css" href="css/iconfont.css">
+  <link rel="stylesheet" type="text/css" href="css/main.css">
+  <link rel="stylesheet" href="./../../bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/css/bootstrap.min.css">
 </head>
 
 <body>
-    <div class="main_wrap">
-        <div class="header">
-            <a href="#" class="logo"><img src="images/logo.png" alt=""></a>
-            <div class="copyright">CopyRight © 2019 深圳百秀信息技术股份有限公司<br>All Rights Reserved</div>
-        </div>
+  <div class="main_wrap">
+    <div class="header">
+      <a href="#" class="logo"><img src="images/logo.png" alt=""></a>
+      <div class="copyright">CopyRight © 2019 深圳百秀信息技术股份有限公司<br>All Rights Reserved</div>
+    </div>
 
-        <div class="login_form_con">
-            <div class="login_title"></div>
-            <form class="login_form">
-                <i class="iconfont icon-user"></i>
-                <i class="iconfont icon-key"></i>
-                <input type="text" class="input_txt" placeholder="邮箱/手机号">
-                <input type="password" class="input_pass" placeholder="密码">
-                <input type="submit" class="input_sub" value="登 录">
-            </form>
-        </div>
+    <div class="login_form_con">
+      <div class="login_title"></div>
+      <form class="login_form">
+        <i class="iconfont icon-user"></i>
+        <i class="iconfont icon-key"></i>
+        <input type="text" class="input_txt" placeholder="邮箱/手机号">
+        <input type="password" class="input_pass" placeholder="密码">
+        <input type="submit" class="input_sub" value="登 录">
+      </form>
+    </div>
+  </div>
 
-    </div> 
+
+
+  <!--进行提示使用的模态框 Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">提示信息~~~</h4>
+        </div>
+        <!-- 模态框的内容区 -->
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+          <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="./js/jquery-1.12.4.min.js"></script>
+  <!-- 引入配置文件 -->
+  <script src="./js/tool/config.js"></script>
+  <script src="./js/tool/user.js"></script>
+  <!-- 模态框的使用boot的js文件 -->
+  <script src="./../../bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
+
+  <script>
+    //给登录按钮设置点击事件
+    $('.input_sub').on('click', function() {
+      //获取用户名和密码
+      var user_name = $('.input_txt').val();
+      var password = $('.input_pass').val();
+
+      //trim是字符串方法，去除两端空格
+      if (user_name.trim() === '' || password.trim() === '') {
+        // alert('请填写完整表单')
+        // 用过boot的模态框替换效果
+        $('#myModal').modal('show').find('.modal-body').text('请完整填写用户名和密码');
+        return;
+      }
+
+      //若不为空，则发送请求
+      user.login({
+        //用户登录时需要的信息
+        data: {
+          user_name: user_name,
+          password: password
+        },
+        //用户登录检测后的处理方式（回调函数）
+        callback: function(res) {
+          //   console.log(res);
+          //根据服务端响应的状态进行对应操作
+          if (res.code === 200) {
+            location.href = './index.html';
+          } else {
+            // alert('用户名或密码书写错误');
+            //通过模态框进行提示
+            $('#myModal').modal('show').find('.modal-body').text('用户名或密码错误，请重新填写');
+          }
+        }
+      });
+      //   $.ajax({
+      //     type: 'post',
+      //     // url: 'http://localhost:8000/admin/login',
+      //     url: USER_LOGIN,
+      //     data: {
+      //       user_name: user_name,
+      //       password: password
+      //     },
+      //     success: function(res) {
+      //       //   console.log(res);
+      //       //根据服务端响应的状态进行对应操作
+      //       if (res.code === 200) {
+      //         location.href = './index.html';
+      //       } else {
+      //         alert('用户名或密码书写错误');
+      //       }
+      //     }
+      //   });
+    });
+  </script>
 
 </body>
 
