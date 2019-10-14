@@ -161,7 +161,8 @@
           //2.将获取的数据渲染到页面中
           var data = res.data;
           //左侧的用户信息
-          $('.user_info img').prop('src', data.user_pic).next().text(data.nickname);
+          $('.user_info img').prop('src', data.user_pic)
+            .next().text(data.nickname);
           //右侧顶部的用户头像
           $('.user_center_link img').prop('src', data.user_pic);
         }

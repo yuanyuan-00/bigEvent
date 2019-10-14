@@ -2,69 +2,185 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>文章列表</title>
-    <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/iconfont.css">
-    <link rel="stylesheet" href="css/main.css">
-    <script src="js/jquery-1.12.4.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>文章列表</title>
+  <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/iconfont.css">
+  <link rel="stylesheet" href="css/main.css">
+  <script src="js/jquery-1.12.4.min.js"></script>
 
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="common_title">
-            用户信息修改
-        </div>
-        <div class="container-fluid common_con">
-            <form class="form-horizontal article_form">
-                <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="李思思">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="思思">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="lisisi@126.com">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
-                    <div class="col-sm-10">
-                        <img src="images/2.jpg" alt="" class="user_pic">
-                        <input type="file" id="exampleInputFile">
-                    </div>
-                </div>
 
-                <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
-                        <div class="col-sm-4">
-                            <input type="password" class="form-control" id="inputEmail3" value="12345678">
-                        </div>
-                    </div>
-               
-    
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success">修改</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+  <div class="container-fluid">
+    <div class="common_title">
+      用户信息修改
     </div>
+    <div class="container-fluid common_con">
+      <form class="form-horizontal article_form">
+        <div class="form-group">
+          <label for="username" class="col-sm-2 control-label">用户名称：</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" id="username" name="username" value="李思思">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="nickname" class="col-sm-2 control-label">昵称：</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" id="nickname" name="nickname" value="思思">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email" class="col-sm-2 control-label">邮箱：</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" id="email" name="email" value="lisisi@126.com">
+          </div>
+        </div>
 
+        <div class="form-group">
+          <label for="user_pic" class="col-sm-2 control-label">用户图标：</label>
+          <div class="col-sm-10">
+            <!-- 给img单独设置一个id avatar-->
+            <img src="images/2.jpg" alt="" class="user_pic" id="avatar">
+            <!-- label的for和input[type=file]的id进行关联 -->
+            <input type="file" id="user_pic" name="user_pic">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="col-sm-2 control-label">密码：</label>
+          <div class="col-sm-4">
+            <input type="password" class="form-control" id="password" name="password" value="12345678">
+          </div>
+        </div>
+
+
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <!-- <button type="submit" class="btn btn-success">修改</button> -->
+            <button type="button" class="btn btn-success" id="submit">修改</button>
+
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+
+  <!--进行提示使用的模态框 Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">提示信息~~~</h4>
+        </div>
+        <!-- 模态框的内容区 -->
+        <div class="modal-body">
+          请完整填写表单
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+          <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="./js/jquery-1.12.4.min.js"></script>
+  <script src="./js/bootstrap/js/bootstrap.min.js"></script>
+
+  <script src="./js/tool/config.js"></script>
+  <script src="./js/tool/user.js"></script>
+  <script>
+    //请求用户的详情信息
+    user.getAllInfo({
+      callback: function(res) {
+        //检测响应状态
+        if (res.code === 200) {
+          // 遍历响应得到的对象data
+          var data = res.data;
+          $.each(data, function(k, value) {
+            // console.log(k);
+            //检测如果是user_pic，进行单独的src设置，否则同意进行val()设置即可
+            if (k !== 'user_pic') {
+              $('#' + k).val(value);
+            } else {
+              //给文件域前面的img设置图片
+              $('#avatar').prop('src', value);
+            }
+          });
+        }
+      }
+    });
+    // $.ajax({
+    //   url: 'http://localhost:8000/admin/userinfo_get',
+    //   success: function(res) {
+    //     //检测响应状态
+    //     if (res.code === 200) {
+    //       // 遍历响应得到的对象data
+    //       var data = res.data;
+    //       $.each(data, function(k, value) {
+    //         // console.log(k);
+    //         //检测如果是user_pic，进行单独的src设置，否则同意进行val()设置即可
+    //         if (k !== 'user_pic') {
+    //           $('#' + k).val(value);
+    //         } else {
+    //           //给文件域前面的img设置图片
+    //           $('#avatar').prop('src', value);
+    //         }
+    //       });
+    //     }
+    //   }
+    // });
+
+    //将修改按钮更改为普通button
+    $('#submit').on('click', function() {
+      //获取表单数据，检测是否填写完毕
+      var fd = new FormData($('form')[0]); //传入DOM对象形式标签
+      //观察后发现，文件域如果没有选择文件，size为0，name为‘’
+      if (
+        fd.get('username').trim() === '' ||
+        fd.get('password').trim() === '' ||
+        fd.get('nickname').trim() === '' ||
+        fd.get('email').trim() === '' ||
+        fd.get('user_pic').size === 0
+      ) {
+        $('#myModal').modal('show');
+        return;
+      }
+
+      //发送请求
+      user.edit({
+        data: fd,
+        callback: function(res) {
+          if (res.code === 200) {
+            //成功的修改了用户信息，让用户重新登录，跳转到login.html页面
+            //获取父页面的parent对象
+            parent.location.href = './login.html';
+          }
+        }
+      });
+    });
+
+
+
+    //本地图片预览
+    $('#user_pic').on('change', function() {
+      //获取文件域中的文件信息
+      var tempFile = this.files[0];
+      //生成临时图片地址
+      var tempSrc = URL.createObjectURL(tempFile);
+      //将临时图片地址设置给#avatar
+      $('#avatar').prop('src', tempSrc);
+    });
+  </script>
 </body>
 
 </html>

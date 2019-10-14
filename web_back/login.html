@@ -9,7 +9,8 @@
   <link rel="stylesheet" type="text/css" href="css/reset.css">
   <link rel="stylesheet" type="text/css" href="css/iconfont.css">
   <link rel="stylesheet" type="text/css" href="css/main.css">
-  <link rel="stylesheet" href="./../../bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+  <!-- <link rel="stylesheet" href="./../../bootstrap-3.3.7-dist/css/bootstrap.min.css"> -->
+  <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css">
 </head>
 
 <body>
@@ -26,7 +27,7 @@
         <i class="iconfont icon-key"></i>
         <input type="text" class="input_txt" placeholder="邮箱/手机号">
         <input type="password" class="input_pass" placeholder="密码">
-        <input type="submit" class="input_sub" value="登 录">
+        <input type="button" class="input_sub" value="登 录">
       </form>
     </div>
   </div>
@@ -59,7 +60,8 @@
   <script src="./js/tool/config.js"></script>
   <script src="./js/tool/user.js"></script>
   <!-- 模态框的使用boot的js文件 -->
-  <script src="./../../bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+  <!-- <script src="./../../bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script> -->
+  <script src="./js/bootstrap/js/bootstrap.min.js"></script>
 
 
   <script>
@@ -86,7 +88,7 @@
         },
         //用户登录检测后的处理方式（回调函数）
         callback: function(res) {
-          //   console.log(res);
+          console.log(res);
           //根据服务端响应的状态进行对应操作
           if (res.code === 200) {
             location.href = './index.html';

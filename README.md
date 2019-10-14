@@ -133,5 +133,113 @@ var USER_INFO = baseUrl + '/admin/getuser'; //获取用户信息
 
 
 
+# 前两部分的错误总结
 
+要注意input的type是否转换成了普通按钮类型，因为submit会直接将表单提交
+
+form表单内的数据，在点击submit按钮的时候即便没有写action的请求地址，也会默认提交到一个请求地址，这个请求地址是当前访问的网址（form表单的数据不submit，可能是通过ajax提交）
+
+怎样解决这个默认提交：在form表单内的提交按钮<button>处添加onclick = 'return false',点击按钮时就不会再提交了，因为这个请求就是通过onclick事件提交的，若果使用ajax的方式提交form表单的数据，写一个点击出发的函数，其返回值为false，即onclick = 'submitForAjax()';悠哥说的解决方式是：将submit属性改成button，或者在jQuery中使用preventDefault属性，去除submit的默认属性。
+
+```javascript
+<button onclick="return validateLogin()">登录</button>
+<script>
+	function validateLogin() {
+    	var data = $("form").serialize)();
+    	$.post(
+              "${pageContext.request.contextPath}/login",data,funciton (data) {
+            if (data == 'success') {
+            alert('successful');
+        } else {
+            alert('you are error');
+        }
+            }
+        );
+}    
+</script>
+```
+
+# 个人中心信息展示
+
+### 功能简介
+
+- 页面加载中请求用户的详细信息
+- 将数据展示到对应元素中（用户的头像在img中展示，而不是文件域，文件域只是用来进行选择文件）
+  - 为了方便进行元素获取和数据设置，可以将input的id设置为与res.data的属性名相同
+    - img需要设置src，user_pic属性需要进行单独操作
+    - 为了后续使用formData提交数据时可以正常提交，顺便给每个表单元素设置了name属性
+- 点击修改按钮
+  + 检测内容是否填写完整（模态框）
+- 将数据通过formData形式发送给服务端保存(生成临时图片地址：URL.createObjectURL(this.files[0]))
+- 保存完毕更新即可
+
+```javascript
+ //请求用户的详情信息
+    $.ajax({
+      url: 'http://localhost:8000/admin/userinfo_get',
+      success: function(res) {
+        //检测响应状态
+        if (res.code === 200) {
+          // 遍历响应得到的对象data
+          var data = res.data;
+          $.each(data, function(k, value) {
+            // console.log(k);
+            //检测如果是user_pic，进行单独的src设置，否则同意进行val()设置即可
+            if (k !== 'user_pic') {
+              $('#' + k).val(value);
+            } else {
+              //给文件域前面的img设置图片
+              $('#avatar').prop('src', value);
+            }
+          });
+        }
+      }
+    });
+
+    //将修改按钮更改为普通button
+    $('#submit').on('click', function() {
+      //获取表单数据，检测是否填写完毕
+      var fd = new FormData($('form')[0]); //传入DOM对象形式标签
+      //观察后发现，文件域如果没有选择文件，size为0，name为‘’
+      if (
+        fd.get('username').trim() === '' ||
+        fd.get('password').trim() === '' ||
+        fd.get('nickname').trim() === '' ||
+        fd.get('email').trim() === '' ||
+        fd.get('user_pic').size === 0
+      ) {
+        $('#myModal').modal('show');
+        return;
+      }
+
+      //发送请求
+      $.ajax({
+        type: 'post',
+        url: 'http://localhost:8000/admin/userinfo_edit',
+        data: fd,
+        contentType: false,
+        processData: false,
+        success: function(res) {
+          if (res.code === 200) {
+            //成功的修改了用户信息，让用户重新登录，跳转到login.html页面
+            //获取父页面的parent对象
+            parent.location.href = './index.html';
+          }
+        }
+      });
+    });
+    //发送请求
+    //进行更新
+
+
+    //本地图片预览
+    $('#user_pic').on('change', function() {
+      //获取文件域中的文件信息
+      var tempFile = this.files[0];
+      //生成临时图片地址
+      var tempSrc = URL.createObjectURL(tempFile);
+      //将临时图片地址设置给#avatar
+      $('#avatar').prop('src', tempSrc);
+    });
+```
 
