@@ -243,3 +243,276 @@ form表单内的数据，在点击submit按钮的时候即便没有写action的�
     });
 ```
 
+
+
+# article_category部分
+
+ 其他按键：
+
+​    home键 光标移动到一行最前面
+
+​    end键 光标移动到一行最后面
+
+​    左右键 光标左右移动
+
+​    左右键 + ctrl 光标按照单词块移动
+
+​    方向键 + shift 光标选中
+
+​    左右键 + ctrl + shift 光标按照单词块移动并选中
+
+​    alt + 鼠标左键 在多个位置设置光标
+
+
+
+
+
+   \- 功能简介：
+
+​    1 分类信息获取和展示
+
+​     \- 使用字符串拼接方式进行结构的创建操作
+
+​      \- 请求服务端的数据
+
+​      \- 拼接字符串
+
+​      \- 生成到页面中显示
+
+​     \- 使用一些js库（模板引擎工具）进行结构的创建操作
+
+​    2 分类信息的新增功能
+
+​     \- 结构处理：为了让新增模板库的关闭按钮可以关闭，设置自定义属性 data-dismiss="modal"
+
+​     \- 点击新增按钮，检测数据是否填写完毕，如果填写完毕发送请求
+
+​      \- 给两个输入框设置id
+
+​     \- 新增成功，更新页面即可
+
+​    3 分类信息的编辑功能
+
+​     \- 在模态框中设置一个提交编辑按钮,默认隐藏
+
+​      \- 顺便将id从model修改为modal
+
+​      \- 点击表格中的编辑时，将提交编辑按钮显示，新增按钮隐藏
+
+​      \- 点击新增分类按钮时，将新增按钮显示，将提交编辑按钮隐藏
+
+​     \- 在编辑按钮中设置data-id属性保存当前数据的id
+
+​    4 分类信息的删除功能
+
+```javascript
+ <script src="./js/tool/config.js"></script>
+  <script src="./js/tool/article.js"></script>
+
+  <!-- 引入模板引擎文件 -->
+  <script src="./js/template-web.js"></script>
+  <!-- 设置分类结构的模板-->
+  <script type="text/html" id="category">
+    {{each data v i }}
+    <tr>
+      <td>{{v.name}}</td>
+      <td>{{v.slug}}</td>
+      <td class="text-center">
+        <a href="javascript:;" class="btn btn-info btn-xs edit" data-id="{{v.id}}">编辑</a>
+        <a href="javascript:;" class="btn btn-danger btn-xs del" data-id="{{v.id}}">删除</a>
+      </td>
+    </tr>
+    {{/each}}
+  </script>
+
+  <script>
+    //功能1：分类数据的获取和展示 
+    article.getCate({
+      callback: function(res) {
+        // console.log(res);
+        if (res.code === 200) {
+          //通过模板引擎进行结构字符串的拼接
+
+          var htmlSrc = template('category', res); //在模板内部获取res.data
+          $('#tbody').html(htmlSrc);
+        }
+      }
+    });
+    // $.ajax({
+
+    //   url: 'http://localhost:8000/admin/category_search',
+    //   success: function(res) {
+    //     // console.log(res);
+    //     if (res.code === 200) {
+    //       //通过模板引擎进行结构字符串的拼接
+
+    //       var htmlSrc = template('category', res); //在模板内部获取res.data
+    //       $('#tbody').html(htmlSrc);
+    //     }
+    //   }
+
+    // });
+
+
+    //功能2：分类数据的新增功能
+    $('#modal_add').on('click', function() {
+      var name = $('#cate_name').val();
+      var slug = $('#cate_slug').val();
+
+      if (name.trim() === '' || slug.trim() === '') {
+        alert('新增');
+        return;
+      }
+      // 发送请求
+      article.addCate({
+        data: {
+          name: name,
+          slug: slug
+        },
+        callback: function(res) {
+          if (res.code === 200) {
+            //如果添加成功那么刷新一下
+            location.reload();
+          } else {
+            //由于name和slug不能冲突，所以可以来一个失败提示
+            alert('name和slug不能重复，请重新输入');
+          }
+        }
+      });
+    });
+    //   $.ajax({
+    //     type: 'post',
+    //     url: 'http://localhost:8000/admin/category_add',
+    //     data: {
+    //       name: name,
+    //       slug: slug
+    //     },
+    //     success: function(res) {
+    //       if (res.code === 200) {
+    //         //如果添加成功那么刷新一下
+    //         location.reload();
+    //       } else {
+    //         //由于name和slug不能冲突，所以可以来一个失败提示
+    //         alert('name和slug不能重复，请重新输入');
+    //       }
+    //     }
+    //   });
+    // });
+
+    //功能3：分类数据的编辑功能
+    //表格中编辑按钮的点击事件（给tbody设置事件委托）
+    $('#tbody').on('click', '.edit', function() {
+      //获取当前元素的data-id属性
+      var id = $(this).data('id');
+      //需要让提交按钮点击时，可以获取到这个id
+      //方式1：设置为全局变量，
+      //方式2：给提交编辑按钮设置data-id
+      //内部jQuery对象保存方式，data
+      $('#modal_edit').data('id', id);
+
+      //将当前编辑的数据填写到模态框中
+      var $tds = $(this).parents('tr').children();
+      $('#cate_name').val($tds.eq(0).text());
+      $('#cate_slug').val($tds.eq(1).text());
+
+      // console.log(id);
+      //将模态框显示，并调节提交编辑和新增按钮的显示情况
+      $('#addModal').modal('show');
+      $('#modal_add').hide();
+      $('#modal_edit').show();
+    });
+
+    //给新增分类按钮设置点击事件
+    $('#addBtn').on('click', function() {
+      $('#modal_add').show();
+      $('#modal_edit').hide();
+    });
+
+    //设置提交编辑按钮点击事件
+    $('#modal_edit').on('click', function() {
+      var id = $(this).data('id');
+      // console.log(id);
+      //获取两个输入框内容并检测是否填写完整
+      var name = $('#cate_name').val();
+      var slug = $('#cate_slug').val();
+      if (name.trim() === '' || slug.trim() === '') {
+        alert('请填写完整表单');
+        return;
+      }
+
+      //发送请求
+      article.editCate({
+        data: {
+          name: name,
+          slug: slug
+        },
+        callback: function(res) {
+          if (res.code === 200) {
+            location.reload();
+          } else {
+            //后端处理不到位，导致其可以一样
+            alert('name和slug不能重复，请检查重新输入');
+          }
+        }
+      });
+      //   $.ajax({
+      //     type: 'post',
+      //     url: 'http://localhost:8000/admin/category_edit',
+      //     data: {
+      //       id: id,
+      //       name: name,
+      //       slug: slug
+      //     },
+      //     success: function(res) {
+      //       if (res.code === 200) {
+      //         location.reload();
+      //       } else {
+      //         //后端处理不到位，导致其可以一样
+      //         alert('name和slug不能重复，请检查重新输入');
+      //       }
+      //     }
+      //   });
+    });
+
+
+    //功能4：分类数据的删除功能
+    //给删除按钮设置data-id属性
+    $('#tbody').on('click', '.del', function() {
+      //询问用户是否确认删除
+      if (!confirm('是否确定删除呢？')) {
+        return;
+      }
+
+      var $tr = $(this).parents('tr'); //提前获取当前删除按钮所在tr
+      //发送请求
+      article.delCate({
+        data: {
+          id: $(this).data('id')
+        },
+        callback: function(res) {
+          if (res.code === 200) {
+            location.reload();
+            //也可以删除tr，此时需要重新获取this
+            //$tr.remove();
+          }
+        }
+      });
+      // $.ajax({
+      //   type: 'post',
+      //   url: 'http://localhost:8000/admin/category_delete',
+      //   data: {
+      //     //对象没有作用域，此时this没有发生变化，因为函数环境没有发生变化
+      //     id: $(this).data('id')
+      //   },
+      //   success: function(res) {
+      //     if (res.code === 200) {
+      //       location.reload();
+      //       //也可以删除tr，此时需要重新获取this
+      //       //$tr.remove();
+      //     }
+      //   }
+      // });
+    });
+  </script>
+```
+
