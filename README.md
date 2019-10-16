@@ -516,3 +516,123 @@ form表单内的数据，在点击submit按钮的时候即便没有写action的�
   </script>
 ```
 
+
+
+# 文章分页展示
+
+1.功能简介：通过模板引擎进行页面的结构创建
+
+2.设置顶部的筛选功能
+
+3.制作数据的分页功能
+
+```javascript
+<script src="./js/tool/config.js"></script>
+  <script src="./js/tool/article.js"></script>
+
+  <!-- 引入模板引擎文件 -->
+  <script src="./js/template-web.js"></script>
+  <!-- 设置文章信息模板 -->
+  <script type="text/template" id="article">
+
+    {{each data v}}
+    <tr>
+      <td>{{v.title}}</td>
+      <td>{{v.author}}</td>
+      <td>{{v.type}}</td>
+      <td class="text-center">{{v.date}}</td>
+      <td class="text-center">{{v.state}}</td>
+      <td class="text-center">
+        <a href="post-edit.html?id=995" class="btn btn-default btn-xs">编辑</a>
+        <a href="javascript:deleteTr( 995 );" class="btn btn-danger btn-xs">删除</a>
+      </td>
+    </tr>
+    {{/each}}
+  </script>
+
+
+  <!-- 设置分类下拉菜单选项模板 -->
+  <script type="text/html" id="category">
+    {{each data v}}
+    <option value="{{v.id}}">{{v.name}}</option>
+    {{/each}}
+  </script>
+  <script>
+    //功能1： 第一次请求，进行基本数据获取，无需传入其他参数
+
+    // $.ajax({
+    //   url: 'http://localhost:8000/admin/search',
+    //   success: function(res) {
+    //     if (res.code === 200) {
+    //       //   console.log(res);
+    //       var htmlSrc = template('article', res);
+    //       //   console.log(htmlSrc);
+    //       // 将结构字符串生成给对应标签即可
+    //       $('tbody').html(htmlSrc);
+    //     }
+    //   }
+    // });
+    getArticle();
+    //功能2：筛选文章数据
+    //请求服务端接口，获取文章分类信息（可以使用上个页面设置的article》getCate()进行获取）
+    article.getCate({
+      callback: function(res) {
+        // console.log(res);
+        if (res.code === 200) {
+          //用过模板生成分类下拉菜单的选项
+          var htmlSrc = template('category', res);
+          $('#selCategory').append(htmlSrc);
+        }
+      }
+    });
+
+    //给筛选按钮设置点击事件
+    $('#btnSearch').on('click', function(e) {
+      // 阻止默认提交
+      e.preventDefault();
+
+      //发送请求，请求筛选的数据
+      //   $.ajax({
+      //     url: 'http://localhost:8000/admin/search',
+      //     // 筛选时需要传入type和state参数，代表文章分类和文章状态
+      //     data: {
+      //       type: $('#selCategory').val(),
+      //       state: $('#selStatus').val()
+      //     },
+      //     success: function(res) {
+      //       if (res.code === 200) {
+      //         //   console.log(res);
+      //         var htmlSrc = template('article', res);
+      //         //   console.log(htmlSrc);
+      //         // 将结构字符串生成给对应标签即可
+      //         $('tbody').html(htmlSrc);
+      //       }
+      //     }
+      //   });
+      getArticle();
+    });
+
+
+    //封装一个函数进行数据请求和结构的生成
+    function getArticle() {
+      $.ajax({
+        url: 'http://localhost:8000/admin/search',
+        // 筛选时需要传入type和state参数，代表文章分类和文章状态
+        data: {
+          type: $('#selCategory').val(),
+          state: $('#selStatus').val()
+        },
+        success: function(res) {
+          if (res.code === 200) {
+            //   console.log(res);
+            var htmlSrc = template('article', res);
+            //   console.log(htmlSrc);
+            // 将结构字符串生成给对应标签即可
+            $('tbody').html(htmlSrc);
+          }
+        }
+      });
+
+    }
+```
+
